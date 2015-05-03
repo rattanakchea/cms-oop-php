@@ -1,5 +1,5 @@
 <?php
-
+ob_start();  //store output in a buffer (in case need to redirect)
 include_once('../includes/connection.php');
 include_once('../partials/header.php');
 if (isset($_SESSION['logged_in'])) { ?>
@@ -28,6 +28,7 @@ if (isset($_SESSION['logged_in'])) { ?>
             if ($num == 1) {
                 //correct credentails
                 $_SESSION['logged_in'] = true;
+               
                 header('Location: index.php');
                 exit();
             } else {
@@ -54,3 +55,4 @@ if (isset($_SESSION['logged_in'])) { ?>
  }
 
 include_once('../partials/footer.html');
+ob_end_flush();

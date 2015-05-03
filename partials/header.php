@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <!doctype html>
 <html class="no-js" lang="">
     <head>
@@ -33,7 +32,7 @@
                     <a class="navbar-brand" href="/index.php">myCMS</a>
                 </div>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="admin">Admin</a></li>
+                    <li><a href="/admin">Admin</a></li>
                     <?php
                     if (isset($_SESSION['logged_in'])) {
                         echo '<li><a href="/logout.php">Log out</a></li>';
