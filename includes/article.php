@@ -6,6 +6,7 @@
  * @author rattanak
  */
 class article {
+    
     public function fetch_all(){
         global $pdo;
         
