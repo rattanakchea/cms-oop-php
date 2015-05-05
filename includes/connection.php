@@ -6,7 +6,6 @@ session_start();
 //- configure for local and production environment
 
 $host = substr($_SERVER['HTTP_HOST'], 0, 5);
-global $pathToDB;
 
 if (in_array($host, array('local', '127.0', '192.1'))) {
     $local = TRUE;
@@ -23,29 +22,82 @@ function setUpPath($local) {
         //$path2 = C:\Users\rattanak\MyWorkspace\cms-phpacademy
         global $pathToDB;
         $pathToDB = "sqlite:" . $path . "data/data.sqlite";
+        connectSQLi($pathToDB);
     } else {
         //production
         //PATH
         //('mysql:host=localhost;dbname=testdb;charset=utf8', 'username', 'password');
 
         $host = 'fdb12.awardspace.net';
-        $dbname = $dbuser = '1863003_rattanak';
-
-        $dsn = 'mysql:host=' . $host . '.;' . 'dbname=' . $dbname;
+        $dbname = '1863003_rattanak';
+        $dbuser = '1863003_rattanak';
+        //$dsn = 'mysql:host=' . $host . ';' . 'dbname=' . $dbname;
+         $dsn = "mysql:host=$host;dbname=$dbname";
 
         $password = 'r8attanokia5';
-
-
-        global $pathToDB;
-        $pathToDB = $dsn . ',' . $dbuser . ',' . $password;
+        connectMySQL($dsn, $dbuser, $password);
     }
 }
 
 setUpPath($local);
 
-try {
-    $pdo = new PDO($pathToDB);
-    //$pdo = new PDO("sqlite:". $database);
-} catch (PDOException $e) {
-    exit($e->errorInfo);
+function connectSQLi($pathToDB) {
+    try {
+        global $pdo;
+        $pdo = new PDO($pathToDB);
+        //$pdo = new PDO("sqlite:". $database);
+    } catch (PDOException $e) {
+        echo ($e->errorInfo);
+    }
 }
+
+function connectMySQL($dsn, $dbuser, $password){
+    try {
+        global $pdo;
+        $pdo = new PDO($dsn, $dbuser, $password);
+    } catch (PDOException $e) {
+        echo ($e->errorInfo);
+    }
+}
+
+//debug
+// Assume debugging is on. 
+if (!isset($debug)) {
+    $debug = TRUE;
+}
+
+# ***** SETTINGS ***** #
+# ******************** #
+# **************************** #
+# ***** ERROR MANAGEMENT ***** #
+// Create the error handler:
+function my_error_handler($e_number, $e_message, $e_file, $e_line, $e_vars) {
+
+    global $debug, $contact_email;
+
+    // Build the error message:
+    $message = "An error occurred in script '$e_file' on line $e_line: $e_message";
+
+    // Append $e_vars to the $message:
+    $message .= print_r($e_vars, 1);
+
+    if ($debug) { // Show the error.
+        echo '<div class="error">' . $message . '</div>';
+        debug_print_backtrace();
+    } else {
+
+        // Log the error:
+        //error_log ($message, 1, $contact_email); // Send email.
+        // Only print an error message if the error isn't a notice or strict.
+        if (($e_number != E_NOTICE) && ($e_number < 2048)) {
+            echo '<div class="error">A system error occurred. We apologize for the inconvenience.</div>';
+        }
+    } // End of $debug IF.
+}
+
+// End of my_error_handler() definition.
+// Use my error handler:
+set_error_handler('my_error_handler');
+
+# ***** ERROR MANAGEMENT ***** #
+# **************************** #
