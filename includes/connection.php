@@ -37,7 +37,7 @@ function setUpPath($local) {
 
 
         global $pathToDB;
-        $pathToDB = $dsn . ',' . $username . ',' . $password;
+        $pathToDB = $dsn . ',' . $dbuser . ',' . $password;
     }
 }
 
