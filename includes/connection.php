@@ -1,40 +1,46 @@
 <?php
 
 session_start();
-
 //configuration files
 //- configure for local and production environment
 
 $host = substr($_SERVER['HTTP_HOST'], 0, 5);
+$pdo;
 
 if (in_array($host, array('local', '127.0', '192.1'))) {
     $local = TRUE;
+    $production = FALSE;
 } else {
     $local = FALSE;
     $production = TRUE;
 }
 
 function setUpPath($local) {
+    //always use sqlite
     if ($local) {
         $path = $_SERVER['DOCUMENT_ROOT'] . '/';
         //$path = C:\Users\rattanak\MyWorkspace\cms-phpacademy
         $path2 = dirname(__FILE__);
         //$path2 = C:\Users\rattanak\MyWorkspace\cms-phpacademy
-        global $pathToDB;
-        $pathToDB = "sqlite:" . $path . "data/data.sqlite";
+        $pathToDB = "sqlite:" . $path . "data/data.sqlite3";
         connectSQLi($pathToDB);
     } else {
         //production
         //PATH
         //('mysql:host=localhost;dbname=testdb;charset=utf8', 'username', 'password');
 
-        $host = 'fdb12.awardspace.net';
-        $dbname = '1863003_rattanak';
-        $dbuser = '1863003_rattanak';
+//        $host = 'fdb12.awardspace.net';
+//        $dbname = '1863003_rattanak';
+//        $dbuser = '1863003_rattanak';
+        $host = 'localhost';
+        $dbname = 'rattanak_cmsphp';
+        $dbuser = 'rattanak_cmsphp';
+        $password = 'r8attanokia5';
+        
         //$dsn = 'mysql:host=' . $host . ';' . 'dbname=' . $dbname;
          $dsn = "mysql:host=$host;dbname=$dbname";
 
-        $password = 'r8attanokia5';
+        
         connectMySQL($dsn, $dbuser, $password);
     }
 }
@@ -45,7 +51,6 @@ function connectSQLi($pathToDB) {
     try {
         global $pdo;
         $pdo = new PDO($pathToDB);
-        //$pdo = new PDO("sqlite:". $database);
     } catch (PDOException $e) {
         echo ($e->errorInfo);
     }

@@ -4,8 +4,6 @@
     
     $article = new Article();
     $articles = $article->fetch_all();
-    
-    
 ?>
 
 <?php
